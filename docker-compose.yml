@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  dev-finder-db:
+  video-with-screen-share:
     image: postgres
     restart: always
     container_name: video-with-screen-share
