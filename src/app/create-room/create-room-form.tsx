@@ -16,13 +16,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { createRoomAction } from "./actions";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(1).max(50),
-  description: z.string().min(1).max(50),
+  description: z.string().min(1).max(250),
+  githubRepo: z.string().min(1).max(50),
+  tags: z.string().min(1).max(50),
 });
 
-export default function CreateRoomForm() {
+export function CreateRoomForm() {
+  const { toast } = useToast();
+
   const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -30,12 +35,18 @@ export default function CreateRoomForm() {
     defaultValues: {
       name: "",
       description: "",
+      githubRepo: "",
+      tags: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    await createRoomAction(values);
-    router.push("/");
+    const room = await createRoomAction(values);
+    toast({
+      title: "Room Created",
+      description: "Your room was successfully created",
+    });
+    router.push(`/rooms/${room.id}`);
   }
 
   return (
@@ -46,15 +57,16 @@ export default function CreateRoomForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} placeholder="Dev Finder Is Awesome" />
               </FormControl>
               <FormDescription>This is your public room name.</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="description"
@@ -62,16 +74,58 @@ export default function CreateRoomForm() {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input
+                  {...field}
+                  placeholder="Im working on a side project, come join me"
+                />
               </FormControl>
-              <FormDescription>Describe your room</FormDescription>
+              <FormDescription>
+                Please describe what you are be coding on
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full max-w-72 mx-auto">
-          Submit
-        </Button>
+
+        <FormField
+          control={form.control}
+          name="githubRepo"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Github Repo</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder="https://github.com/webdevcody/dev-finder"
+                />
+              </FormControl>
+              <FormDescription>
+                Please put a link to the project you are working on
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="tags"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <Input {...field} placeholder="typescript, nextjs, tailwind" />
+              </FormControl>
+              <FormDescription>
+                List your programming languages, frameworks, libraries so people
+                can find you content
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button type="submit">Submit</Button>
       </form>
     </Form>
   );
