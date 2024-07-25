@@ -49,8 +49,8 @@ export default function Header() {
   const session = useSession();
 
   return (
-    <header className="container mx-auto bg-gray-100 dark:bg-gray-900 py-4">
-      <div className="flex justify-between items-center">
+    <header className="bg-gray-100 dark:bg-gray-900 py-4">
+      <div className="container mx-auto flex justify-between items-center">
         <Logo />
         <div className="flex items-center gap-4">
           <AccountDropdown />

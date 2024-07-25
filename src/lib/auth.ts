@@ -52,6 +52,7 @@ export const authConfig = {
     },
   },
 } satisfies AuthOptions;
+
 export function getSession() {
   return getServerSession(authConfig);
 }
